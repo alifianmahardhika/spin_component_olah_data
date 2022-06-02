@@ -81,6 +81,14 @@ def main_plot(filename: str, sigma: str):
 def main_code(fname1: str, fname2: str, sigma_name: str):
     main_plot(fname1, sigma_name)
     main_plot(fname2, sigma_name)
+    if(sigma_name == 'sigma_x'):
+        ylabel_name = r"$\sigma_x$"
+    elif(sigma_name == 'sigma_y'):
+        ylabel_name = r"$\sigma_y$"
+    elif(sigma_name == 'sigma_z'):
+        ylabel_name = r"$\sigma_z$"
+    plt.xlabel(r"$\arctan(\frac{k_z}{k_y})$", fontsize=18)
+    plt.ylabel(ylabel_name, fontsize=18)
     plt.savefig(sigma_name + ".eps", format="eps")
     plt.show()
 
