@@ -52,33 +52,7 @@ def make_dataframe(clean_data):
     return df
 
 def compute_arctan(df: pd.DataFrame):
-    ky_list = list(df['ky'])
-    kz_list = list(df['kz'])
-    arc_tan_list = list()
-    for idx in range(len(ky_list)):
-        ky = ky_list[idx]
-        kz = kz_list[idx]
-        if((ky > 0) and (kz > 0)):
-            arc_tan = np.arctan(ky/kz)
-            arc_tan_list.append(arc_tan)
-        elif((ky < 0) and (kz > 0)):
-            arc_tan = np.pi + np.arctan(ky/kz)
-            arc_tan_list.append(arc_tan)
-        elif((ky < 0) and (kz < 0)):
-            arc_tan = np.pi + np.arctan(ky/kz)
-            arc_tan_list.append(arc_tan)
-        elif((ky > 0) and (kz < 0)):
-            arc_tan = 2*np.pi + np.arctan(ky/kz)
-            arc_tan_list.append(arc_tan)
-        elif((ky >= 0) and (kz == 0)):
-            arc_tan_list.append(0)
-        elif((ky == 0) and (kz >= 0)):
-            arc_tan_list.append(0.5*np.pi)
-        elif((ky <= 0) and (kz == 0)):
-            arc_tan_list.append(np.pi)
-        elif((ky == 0) and (kz <= 0)):
-            arc_tan_list.append(1.5*np.pi)
-    return np.array(arc_tan_list)
+    return np.arctan2(df['kz'].to_numpy(), df['ky'].to_numpy())
 
 def make_plot_table(x_array, y_array):
     result = dict({
@@ -107,7 +81,16 @@ def main_plot(filename: str, sigma: str):
 def main_code(fname1: str, fname2: str, sigma_name: str):
     main_plot(fname1, sigma_name)
     main_plot(fname2, sigma_name)
+    if(sigma_name == 'sigma_x'):
+        ylabel_name = r"$\sigma_x$"
+    elif(sigma_name == 'sigma_y'):
+        ylabel_name = r"$\sigma_y$"
+    elif(sigma_name == 'sigma_z'):
+        ylabel_name = r"$\sigma_z$"
+    plt.xlabel(r"$\arctan(\frac{k_z}{k_y})$", fontsize=18)
+    plt.ylabel(ylabel_name, fontsize=18)
     plt.savefig(sigma_name + ".eps", format="eps")
+    plt.show()
 
 print(args)
 main_code(args.s1, args.s2, args.sigma)
