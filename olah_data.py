@@ -96,6 +96,7 @@ def main_code(fname1: str, fname2: str, sigma_name: str):
     plt.ylabel(ylabel_name, fontsize=18)
     plt.ylim(-1.0, 1.0)
     plt.xticks(x_range, custom_ticks)
+    plt.tight_layout()
     plt.savefig(sigma_name + ".eps", format="eps")
     plt.show()
 
