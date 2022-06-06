@@ -77,18 +77,25 @@ def main_plot(filename: str, sigma: str):
     print("cek length :", len(x_array), len(y_array))
     df_plot = make_plot_table(x_array, y_array)
     plot_data_table(sort_table(df_plot))
+    return x_array, y_array
 
 def main_code(fname1: str, fname2: str, sigma_name: str):
-    main_plot(fname1, sigma_name)
-    main_plot(fname2, sigma_name)
+    x1, y1 = main_plot(fname1, sigma_name)
+    x2, y2 = main_plot(fname2, sigma_name)
+    all_x = np.array(np.append(x1, x2))
+    custom_ticks = ["0", r"$\frac{\pi}{2}$", r"$\pi$", r"$\frac{3\pi}{2}$", r"$2\pi$"]
+    x_range = [-np.pi, -np.pi/2.0, 0, np.pi/2.0, np.pi]
+    print(x_range)
     if(sigma_name == 'sigma_x'):
         ylabel_name = r"$\sigma_x$"
     elif(sigma_name == 'sigma_y'):
         ylabel_name = r"$\sigma_y$"
     elif(sigma_name == 'sigma_z'):
         ylabel_name = r"$\sigma_z$"
-    plt.xlabel(r"$\arctan(\frac{k_z}{k_y})$", fontsize=18)
+    plt.xlabel(r"$\theta$", fontsize=18)
     plt.ylabel(ylabel_name, fontsize=18)
+    plt.ylim(-1.0, 1.0)
+    plt.xticks(x_range, custom_ticks)
     plt.savefig(sigma_name + ".eps", format="eps")
     plt.show()
 
