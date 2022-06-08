@@ -65,10 +65,10 @@ def make_plot_table(x_array, y_array):
 def sort_table(df: pd.DataFrame):
     return df.sort_values(by=['arc'])
 
-def plot_data_table(df: pd.DataFrame):
-    plt.plot(df['arc'], df['sigma'])
+def plot_data_table(df: pd.DataFrame, _color: str):
+    plt.plot(df['arc'], df['sigma'], _color)
 
-def main_plot(filename: str, sigma: str):
+def main_plot(filename: str, sigma: str, _color : str):
     raw_data = read_raw(filename)
     clean_data = clean_raw(raw_data)
     df = make_dataframe(clean_data)
@@ -76,12 +76,12 @@ def main_plot(filename: str, sigma: str):
     y_array = df[sigma].to_numpy()
     print("cek length :", len(x_array), len(y_array))
     df_plot = make_plot_table(x_array, y_array)
-    plot_data_table(sort_table(df_plot))
+    plot_data_table(sort_table(df_plot), _color)
     return x_array, y_array
 
 def main_code(fname1: str, fname2: str, sigma_name: str):
-    x1, y1 = main_plot(fname1, sigma_name)
-    x2, y2 = main_plot(fname2, sigma_name)
+    x1, y1 = main_plot(fname1, sigma_name, 'r')
+    x2, y2 = main_plot(fname2, sigma_name, 'b')
     all_x = np.array(np.append(x1, x2))
     custom_ticks = ["0", r"$\frac{\pi}{2}$", r"$\pi$", r"$\frac{3\pi}{2}$", r"$2\pi$"]
     x_range = [-np.pi, -np.pi/2.0, 0, np.pi/2.0, np.pi]
