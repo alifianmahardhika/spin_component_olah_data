@@ -5,14 +5,6 @@ from typing import List
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import argparse
-
-parser = argparse.ArgumentParser(description='Make sigma plot')
-parser.add_argument('--s1', type=str, required=True, help="spin component file 1")
-parser.add_argument('--s2', type=str, required=True, help="spin component file 2")
-parser.add_argument('--sigma', type=str, required=True, help="sigma x or y or z?", choices=["sigma_x", "sigma_y", "sigma_z"])
-
-args = parser.parse_args()
 
 def read_raw(fname: str):
     raw_data = list()
@@ -62,6 +54,7 @@ def make_plot_table(x_array, y_array):
         })
     df = pd.DataFrame.from_dict(result)
     df.sort_values(by=['arc'], inplace=True)
+    df.reset_index(inplace=True, drop=True)
     return df
 
 def plot_data_table(df: pd.DataFrame, _color: str):
@@ -98,7 +91,4 @@ def main_code(fname1: str, fname2: str, sigma_name: str):
     plt.tight_layout()
     plt.savefig(sigma_name + ".eps", format="eps")
     plt.show()
-
-print(args)
-main_code(args.s1, args.s2, args.sigma)
 

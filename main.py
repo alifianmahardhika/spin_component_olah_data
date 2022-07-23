@@ -1,36 +1,29 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from src.utils import (
+    read_raw,
+    clean_raw,
+    make_dataframe,
+    compute_arctan,
+    make_plot_table,
+)
 
-st.title('Uber pickups in NYC')
-
-DATE_COLUMN = 'date/time'
-DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-            'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
+st.title('Olah data spin component')
 
 @st.cache
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
-    return data
+def load_data(filename: str, sigma: str) -> pd.DataFrame:
+    raw_data = read_raw(filename)
+    clean_data = clean_raw(raw_data)
+    df = make_dataframe(clean_data)
+    x_array = compute_arctan(df)
+    y_array = df[sigma].to_numpy()
+    print("cek length :", len(x_array), len(y_array))
+    df_plot = make_plot_table(x_array, y_array)
+    return df_plot
 
 data_load_state = st.text('Loading data...')
-data = load_data(10000)
+df_plot = load_data("data/vbm-FL.Pxyz_47", "sigma_x")
 data_load_state.text("Done! (using st.cache)")
 
-if st.checkbox('Show raw data'):
-    st.subheader('Raw data')
-    st.write(data)
-
-st.subheader('Number of pickups by hour')
-hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
-st.bar_chart(hist_values)
-
-# Some number in the range 0-23
-hour_to_filter = st.slider('hour', 0, 23, 17)
-filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-
-st.subheader('Map of all pickups at %s:00' % hour_to_filter)
-st.map(filtered_data)
+st.dataframe(df_plot)
