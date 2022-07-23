@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from typing import List
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,13 +20,13 @@ def read_raw(fname: str):
         raw_data = f.readlines()
     return raw_data
 
-def clean_raw(raw_data):
+def clean_raw(raw_data: List[str]) -> List[str]:
     clean_data = list()
     for data in raw_data:
         clean_data.append(",".join(data.split()))
     return clean_data
 
-def make_dataframe(clean_data):
+def make_dataframe(clean_data: List[str]):
     kx = list()
     ky = list()
     kz = list()
