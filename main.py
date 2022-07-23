@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -23,7 +24,20 @@ def load_data(filename: str, sigma: str) -> pd.DataFrame:
     return df_plot
 
 data_load_state = st.text('Loading data...')
-df_plot = load_data("data/vbm-FL.Pxyz_47", "sigma_x")
+df_plot_1 = load_data("data/vbm-FL.Pxyz_47", "sigma_x")
+df_plot_2 = load_data("data/vbm-FL.Pxyz_48", "sigma_x")
 data_load_state.text("Done! (using st.cache)")
 
-st.dataframe(df_plot)
+left_col, right_col = st.columns(2)
+
+left_col.header("vbm-FL.Pxyz_47")
+left_col.dataframe(df_plot_1)
+
+right_col.header("vbm-FL.Pxyz_48")
+right_col.dataframe(df_plot_2)
+
+fig, ax = plt.subplots()
+ax.plot(df_plot_1["arc"], df_plot_1["sigma"], "r")
+ax.plot(df_plot_2["arc"], df_plot_2["sigma"], "b")
+
+st.pyplot(fig)
