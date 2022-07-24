@@ -59,15 +59,15 @@ for uploaded_file in uploaded_files:
 
 data_list = os.listdir("data")
 
-del_sec_1, del_sec_2 = st.columns([2, 1])
+container_del = st.container()
 
-remove_files = del_sec_1.multiselect("Select Data to remove", data_list)
+remove_files = container_del.multiselect("Select Data to remove", data_list)
 
 def on_remove_files(file_list):
     for r_file in file_list:
         remove_file(r_file)
 
-del_sec_2.button("Delete Selected File(s)", on_click= on_remove_files(remove_files))
+container_del.button("Delete Selected File(s)",args=remove_files, on_click=on_remove_files)
 
 sel_col_left, sel_col_right = st.columns(2)
 
