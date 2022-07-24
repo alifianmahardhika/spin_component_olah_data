@@ -28,7 +28,6 @@ def load_data(filename: str, sigma: str) -> pd.DataFrame:
     df_plot = make_plot_table(x_array, y_array)
     return df_plot
 
-
 def make_figure(fp1: str, fp2: str, sigma_name: str) -> Figure:
     df_plot_1 = load_data(fp1, sigma_name)
     df_plot_2 = load_data(fp2, sigma_name)
@@ -42,6 +41,13 @@ def save_uploaded_file(uploadedfile):
         f.write(uploadedfile.getbuffer())
     return st.success("Saved File:{} to data".format(uploadedfile.name))
 
+def remove_file(fname: str):
+    fpath = os.path.join("data", fname)
+    if os.path.exists(fpath):
+        os.remove(fpath)
+    else:
+        st.write("The file does not exist")
+
 uploaded_files = st.file_uploader(
     "Upload Band Data",
     accept_multiple_files= True
@@ -52,6 +58,17 @@ for uploaded_file in uploaded_files:
     save_uploaded_file(uploaded_file)
 
 data_list = os.listdir("data")
+
+del_sec_1, del_sec_2 = st.columns([2, 1])
+
+remove_files = del_sec_1.multiselect("Select Data to remove", data_list)
+
+def on_remove_files(file_list):
+    for r_file in file_list:
+        remove_file(r_file)
+
+del_sec_2.button("Delete Selected File(s)", on_click= on_remove_files(remove_files))
+
 sel_col_left, sel_col_right = st.columns(2)
 
 sel_file1 = sel_col_left.selectbox("Select First Data", data_list)
