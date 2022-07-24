@@ -23,8 +23,9 @@ st.set_page_config(
 
 title_container = st.container()
 title_container.title('Spin component data analysis')
-title_container.markdown('Made by **Alifian Mahardhika Maulana**')
-title_container.markdown('Connect with me : [Github](https://github.com/alifianmahardhika), [ResearchGate](https://www.researchgate.net/profile/Alifian-Maulana)')
+title_container.markdown('Made by')
+title_container.markdown('**Alifian Mahardhika Maulana** : [Github](https://github.com/alifianmahardhika), [ResearchGate](https://www.researchgate.net/profile/Alifian-Maulana)')
+title_container.markdown('**Hana Pratiwi Kadarisman** : [Github](https://github.com/hanapratiwik), [ResearchGate](https://www.researchgate.net/profile/Hana-Kadarisman-3)')
 # function
 @st.cache
 def load_data(filename: str, sigma: str) -> pd.DataFrame:
