@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 from typing import List
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 def read_raw(fname: str):
     raw_data = list()
@@ -56,39 +52,3 @@ def make_plot_table(x_array, y_array):
     df.sort_values(by=['arc'], inplace=True)
     df.reset_index(inplace=True, drop=True)
     return df
-
-def plot_data_table(df: pd.DataFrame, _color: str):
-    plt.plot(df['arc'], df['sigma'], _color)
-
-def main_plot(filename: str, sigma: str, _color : str):
-    raw_data = read_raw(filename)
-    clean_data = clean_raw(raw_data)
-    df = make_dataframe(clean_data)
-    x_array = compute_arctan(df)
-    y_array = df[sigma].to_numpy()
-    print("cek length :", len(x_array), len(y_array))
-    df_plot = make_plot_table(x_array, y_array)
-    plot_data_table(df_plot, _color)
-    return x_array, y_array
-
-def main_code(fname1: str, fname2: str, sigma_name: str):
-    x1, y1 = main_plot(fname1, sigma_name, 'r')
-    x2, y2 = main_plot(fname2, sigma_name, 'b')
-    all_x = np.array(np.append(x1, x2))
-    custom_ticks = ["0", r"$\frac{\pi}{2}$", r"$\pi$", r"$\frac{3\pi}{2}$", r"$2\pi$"]
-    x_range = [-np.pi, -np.pi/2.0, 0, np.pi/2.0, np.pi]
-    print(x_range)
-    if(sigma_name == 'sigma_x'):
-        ylabel_name = r"$\sigma_x$"
-    elif(sigma_name == 'sigma_y'):
-        ylabel_name = r"$\sigma_y$"
-    elif(sigma_name == 'sigma_z'):
-        ylabel_name = r"$\sigma_z$"
-    plt.xlabel(r"$\theta$", fontsize=18)
-    plt.ylabel(ylabel_name, fontsize=18)
-    plt.ylim(-1.0, 1.0)
-    plt.xticks(x_range, custom_ticks)
-    plt.tight_layout()
-    plt.savefig(sigma_name + ".eps", format="eps")
-    plt.show()
-

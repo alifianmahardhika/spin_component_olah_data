@@ -1,7 +1,9 @@
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 from src.utils import (
     read_raw,
     clean_raw,
@@ -10,7 +12,10 @@ from src.utils import (
     make_plot_table,
 )
 
-st.title('Olah data spin component')
+st.set_page_config(
+    layout="wide"
+)
+st.title('Olah data spin component')    
 
 @st.cache
 def load_data(filename: str, sigma: str) -> pd.DataFrame:
@@ -23,21 +28,53 @@ def load_data(filename: str, sigma: str) -> pd.DataFrame:
     df_plot = make_plot_table(x_array, y_array)
     return df_plot
 
-data_load_state = st.text('Loading data...')
-df_plot_1 = load_data("data/vbm-FL.Pxyz_47", "sigma_x")
-df_plot_2 = load_data("data/vbm-FL.Pxyz_48", "sigma_x")
-data_load_state.text("Done! (using st.cache)")
 
-left_col, right_col = st.columns(2)
+def make_figure(fp1: str, fp2: str, sigma_name: str) -> Figure:
+    df_plot_1 = load_data(fp1, sigma_name)
+    df_plot_2 = load_data(fp2, sigma_name)
+    fig, ax = plt.subplots()
+    ax.plot(df_plot_1["arc"], df_plot_1["sigma"], "r")
+    ax.plot(df_plot_2["arc"], df_plot_2["sigma"], "b")
+    return fig
 
-left_col.header("vbm-FL.Pxyz_47")
-left_col.dataframe(df_plot_1)
+def save_uploaded_file(uploadedfile):
+    with open(os.path.join("data", uploadedfile.name), "wb") as f:
+        f.write(uploadedfile.getbuffer())
+    return st.success("Saved File:{} to data".format(uploadedfile.name))
 
-right_col.header("vbm-FL.Pxyz_48")
-right_col.dataframe(df_plot_2)
+uploaded_files = st.file_uploader(
+    "Upload Band Data",
+    accept_multiple_files= True
+    )
 
-fig, ax = plt.subplots()
-ax.plot(df_plot_1["arc"], df_plot_1["sigma"], "r")
-ax.plot(df_plot_2["arc"], df_plot_2["sigma"], "b")
+for uploaded_file in uploaded_files:
+    bytes_data = uploaded_file.read()
+    save_uploaded_file(uploaded_file)
 
-st.pyplot(fig)
+data_list = os.listdir("data")
+sel_col_left, sel_col_right = st.columns(2)
+
+sel_file1 = sel_col_left.selectbox("Select First Data", data_list)
+sel_file2 = sel_col_right.selectbox("Select Second Data", data_list)
+
+sig_x_col, sig_y_col, sig_z_col = st.columns(3)
+path1 = os.path.join("data", sel_file1)
+path2 = os.path.join("data", sel_file2)
+sigma_list = ["sigma_x", "sigma_y", "sigma_z"]
+figure_list = list()
+
+for sigma_n in sigma_list:
+    sig_fig = make_figure(path1, path2, sigma_n)
+    figure_list.append(sig_fig)
+
+with sig_x_col:
+    st.header("Sigma X")
+    st.pyplot(figure_list[0])
+
+with sig_y_col:
+    st.header("Sigma Y")
+    st.pyplot(figure_list[1])
+
+with sig_z_col:
+    st.header("Sigma Z")
+    st.pyplot(figure_list[2])
